@@ -90,6 +90,7 @@ class _HomePageState extends State<HomePage> {
                   setState(() {
                     isDarkMode = !isDarkMode;
                   });
+                  AppTheme.isDarkModeEnabled = isDarkMode;
 
                   //* Save local theme data
                   await prefs.setBool("isDarkMode", isDarkMode);
@@ -101,6 +102,78 @@ class _HomePageState extends State<HomePage> {
                 title: Text(isDarkMode ? "Light Mode" : "Dark Mode"),
               ),
             ]),
+      ),
+      body:
+          //* Search Bar
+          Padding(
+        padding: const EdgeInsets.all(18.0),
+        child: SizedBox(
+          width: double.infinity,
+          child: Column(
+            // ignore: prefer_const_literals_to_create_immutables
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: TextField(
+                  decoration: InputDecoration(
+                    prefixIcon: Icon(
+                      Icons.search,
+                      color: Colors.black,
+                    ),
+                    label: Text("COINS", style: GoogleFonts.aBeeZee()),
+                    hintText: "Search",
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                  ),
+                ),
+              ),
+
+              //* List view to all coins
+              Expanded(
+                child: ListView.builder(
+                  itemCount: 5,
+                  itemBuilder: (context, index) {
+                    return coinDetails();
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget coinDetails() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10.0),
+      child: ListTile(
+        leading: Image.network(
+            "https://assets.coingecko.com/coins/images/1/small/bitcoin.png?1547033579"),
+        title: Text(
+          "BITCOIN\n BTC",
+          style: GoogleFonts.aBeeZee(fontWeight: FontWeight.w800),
+        ),
+        trailing: RichText(
+          textAlign: TextAlign.end,
+          text: TextSpan(
+            text: "1892772.89\n",
+            style: GoogleFonts.aBeeZee(
+              fontWeight: FontWeight.w800,
+              color: Colors.black,
+            ),
+            children: [
+              TextSpan(
+                text: "39.2%\n",
+                style: GoogleFonts.aBeeZee(
+                  fontWeight: FontWeight.w800,
+                  color: Colors.red,
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
