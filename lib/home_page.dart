@@ -1,10 +1,14 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'dart:convert';
+
 import 'package:crypto_app/app_theme.dart';
+import 'package:crypto_app/coin_details.dart';
+import 'package:crypto_app/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:http/http.dart' as http;
 import 'update_profile.dart';
 
 class HomePage extends StatefulWidget {
@@ -20,12 +24,15 @@ class _HomePageState extends State<HomePage> {
   //* Dark Mode initialise
   bool isDarkMode = AppTheme.isDarkModeEnabled;
 
+  // * Init method to call GetUserDetails from shared preferences
   @override
   void initState() {
     super.initState();
     getUserDetails();
+    getCoinDetails();
   }
 
+// * fetch details from Shared preferences and var them.
   void getUserDetails() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
@@ -33,6 +40,25 @@ class _HomePageState extends State<HomePage> {
       name = prefs.getString('name') ?? "";
       email = prefs.getString('email') ?? "";
     });
+  }
+
+//* do a HTTP request to fetch all details
+  Future<List<CoinDetails>> getCoinDetails() async {
+    Uri uri = Uri.parse(api);
+    final response = await http.get(uri);
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      // * fetch all details into one variable, here coinsData
+      List coinsData = json.decode(response.body);
+
+      //* store em in viewModel of
+      List<CoinDetails> data =
+          coinsData.map((e) => CoinDetails.fromJson(e)).toList();
+
+      return data;
+    } else {
+      return <CoinDetails>[];
+    }
   }
 
   @override
@@ -121,7 +147,7 @@ class _HomePageState extends State<HomePage> {
                       color: Colors.black,
                     ),
                     label: Text("COINS", style: GoogleFonts.aBeeZee()),
-                    hintText: "Search",
+                    hintText: "Search Coins",
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(15),
                     ),
@@ -131,12 +157,23 @@ class _HomePageState extends State<HomePage> {
 
               //* List view to all coins
               Expanded(
-                child: ListView.builder(
-                  itemCount: 5,
-                  itemBuilder: (context, index) {
-                    return coinDetails();
-                  },
-                ),
+                child: FutureBuilder(
+                    future: getCoinDetails(),
+                    builder:
+                        (context, AsyncSnapshot<List<CoinDetails>> snapshot) {
+                      if (snapshot.hasData) {
+                        return ListView.builder(
+                          itemCount: snapshot.data!.length,
+                          itemBuilder: (context, index) {
+                            return coinDetailTile(snapshot.data![index]);
+                          },
+                        );
+                      } else {
+                        return Center(
+                          child: const Text("Error occured"),
+                        );
+                      }
+                    }),
               ),
             ],
           ),
@@ -145,27 +182,27 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget coinDetails() {
+  Widget coinDetailTile(CoinDetails model) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10.0),
       child: ListTile(
-        leading: Image.network(
-            "https://assets.coingecko.com/coins/images/1/small/bitcoin.png?1547033579"),
+        leading:
+            SizedBox(height: 50, width: 50, child: Image.network(model.image)),
         title: Text(
-          "BITCOIN\n BTC",
+          "${model.name}\n ${model.symbol}",
           style: GoogleFonts.aBeeZee(fontWeight: FontWeight.w800),
         ),
         trailing: RichText(
           textAlign: TextAlign.end,
           text: TextSpan(
-            text: "1892772.89\n",
+            text: "${model.currentPrice}\n",
             style: GoogleFonts.aBeeZee(
               fontWeight: FontWeight.w800,
               color: Colors.black,
             ),
             children: [
               TextSpan(
-                text: "39.2%\n",
+                text: "${model.priceChange24h}%\n",
                 style: GoogleFonts.aBeeZee(
                   fontWeight: FontWeight.w800,
                   color: Colors.red,
