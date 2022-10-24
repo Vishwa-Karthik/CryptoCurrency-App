@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:crypto_app/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -23,10 +24,15 @@ class ProfileUpdate extends StatelessWidget {
     print("Locally saved");
   }
 
+  //* Dark Mode Concept
+  bool isDarkMode = AppTheme.isDarkModeEnabled;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: isDarkMode ? Colors.grey : Colors.deepPurple.shade100,
       appBar: AppBar(
+        backgroundColor: isDarkMode ? Colors.black38 : Colors.deepPurple,
         title: const Text("Profile "),
       ),
       body: Column(

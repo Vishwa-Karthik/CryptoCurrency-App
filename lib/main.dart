@@ -1,9 +1,12 @@
+import 'package:crypto_app/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'home_page.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await AppTheme.getThemeValue();
   runApp(const MyApp());
 }
 

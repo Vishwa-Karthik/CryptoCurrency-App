@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:crypto_app/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -17,7 +18,7 @@ class _HomePageState extends State<HomePage> {
   String name = "", email = "";
 
   //* Dark Mode initialise
-  bool isDarkMode = false;
+  bool isDarkMode = AppTheme.isDarkModeEnabled;
 
   @override
   void initState() {
@@ -77,7 +78,7 @@ class _HomePageState extends State<HomePage> {
                   Icons.card_membership,
                   color: Colors.black,
                 ),
-                title: const Text("Profile"),
+                title: const Text("Profiles"),
               ),
               ListTile(
                 onTap: () async {
