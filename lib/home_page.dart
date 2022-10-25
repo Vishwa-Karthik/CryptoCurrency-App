@@ -24,12 +24,20 @@ class _HomePageState extends State<HomePage> {
   //* Dark Mode initialise
   bool isDarkMode = AppTheme.isDarkModeEnabled;
 
+  //* List to handle search function
+  List<CoinDetails> coinDetailList = [];
+
+  late Future<List<CoinDetails>> coinDetailFuture;
+
+  //* Null search funtion
+  bool isFirstTimeAcsess = true;
+
   // * Init method to call GetUserDetails from shared preferences
   @override
   void initState() {
     super.initState();
     getUserDetails();
-    getCoinDetails();
+    coinDetailFuture = getCoinDetails();
   }
 
 // * fetch details from Shared preferences and var them.
@@ -129,56 +137,68 @@ class _HomePageState extends State<HomePage> {
               ),
             ]),
       ),
-      body:
-          //* Search Bar
-          Padding(
-        padding: const EdgeInsets.all(18.0),
-        child: SizedBox(
-          width: double.infinity,
-          child: Column(
-            // ignore: prefer_const_literals_to_create_immutables
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(15.0),
-                child: TextField(
-                  decoration: InputDecoration(
-                    prefixIcon: Icon(
-                      Icons.search,
-                      color: Colors.black,
-                    ),
-                    label: Text("COINS", style: GoogleFonts.aBeeZee()),
-                    hintText: "Search Coins",
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(15),
+      body: FutureBuilder(
+          future: coinDetailFuture,
+          builder: (context, AsyncSnapshot<List<CoinDetails>> snapshot) {
+            if (snapshot.hasData) {
+              if (isFirstTimeAcsess) {
+                coinDetailList = snapshot.data!;
+                isFirstTimeAcsess = false;
+              }
+
+              return Column(
+                children: [
+                  //* Search Bar
+                  Padding(
+                    padding: const EdgeInsets.all(15.0),
+                    child: TextField(
+                      onChanged: (query) {
+                        List<CoinDetails> searchRes =
+                            snapshot.data!.where((element) {
+                          String coinName = element.name;
+                          bool isItemFound = coinName.contains(query);
+
+                          return isItemFound;
+                        }).toList();
+                        setState(() {
+                          coinDetailList = searchRes;
+                        });
+                      },
+                      decoration: InputDecoration(
+                        prefixIcon: Icon(
+                          Icons.search,
+                          color: Colors.black,
+                        ),
+                        label: Text("COINS", style: GoogleFonts.aBeeZee()),
+                        hintText: "Search Coins",
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                      ),
                     ),
                   ),
-                ),
-              ),
 
-              //* List view to all coins
-              Expanded(
-                child: FutureBuilder(
-                    future: getCoinDetails(),
-                    builder:
-                        (context, AsyncSnapshot<List<CoinDetails>> snapshot) {
-                      if (snapshot.hasData) {
-                        return ListView.builder(
-                          itemCount: snapshot.data!.length,
-                          itemBuilder: (context, index) {
-                            return coinDetailTile(snapshot.data![index]);
-                          },
-                        );
-                      } else {
-                        return Center(
-                          child: const Text("Error occured"),
-                        );
-                      }
-                    }),
-              ),
-            ],
-          ),
-        ),
-      ),
+                  //* List view to all coins
+                  Expanded(
+                    child: coinDetailList.isEmpty
+                        ? Center(
+                            child: const Text("No Coins found"),
+                          )
+                        : ListView.builder(
+                            itemCount: coinDetailList.length,
+                            itemBuilder: (context, index) {
+                              return coinDetailTile(coinDetailList[index]);
+                            },
+                          ),
+                  )
+                ],
+              );
+            } else {
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+          }),
     );
   }
 
