@@ -31,6 +31,7 @@ environment:
 dependencies:
   cupertino_icons: ^1.0.2
   fl_chart: ^0.55.2
+  motion_toast: ^2.3.2
   flutter:
     sdk: flutter
   flutter_launcher_icons: ^0.10.0

@@ -2,6 +2,8 @@
 
 import 'package:crypto_app/app_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:motion_toast/motion_toast.dart';
+import 'package:motion_toast/resources/arrays.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfileUpdate extends StatefulWidget {
@@ -89,6 +91,7 @@ class _ProfileUpdateState extends State<ProfileUpdate> {
                         isDarkMode ? Colors.grey.shade600 : Colors.deepPurple),
                 onPressed: () {
                   saveDetails();
+                  showSuccessToast(context);
                 },
                 child: const Text(
                   "UPDATE",
@@ -119,4 +122,15 @@ class _ProfileUpdateState extends State<ProfileUpdate> {
       ),
     );
   }
+}
+
+void showSuccessToast(context) {
+  MotionToast.success(
+    description: const Text("Profile Updated"),
+    enableAnimation: true,
+    animationType: AnimationType.fromRight,
+    toastDuration: const Duration(seconds: 2),
+    borderRadius: 40.0,
+    barrierColor: Colors.transparent,
+  ).show(context);
 }
