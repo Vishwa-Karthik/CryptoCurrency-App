@@ -1,16 +1,24 @@
-# crypto_app
+# Flutter Crypto-Curreny App
 
-A new Flutter project.
+A simple flutter interactive crypto application + Coingecko API
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+```bash
+flutter pub get
+```
 
-A few resources to get you started if this is your first Flutter project:
+## Results
+<p>
+<img src="assets\img1.jpg" width="200" height="400>
+<img src="assets\img2.jpg" width="200" height="400>
+<img src="assets\img3.jpg" width="200" height="400>
+<img src="assets\img11.jpg" width="200" height="400>
+<img src="assets\img22.jpg" width="200" height="400>
+<img src="assets\img33.jpg" width="200" height="400>
+</p>
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## References
+1. Coingecko.com
+2. FLchart
+3. MotionToast
