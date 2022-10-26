@@ -10,11 +10,19 @@ flutter pub get
 
 ## Results
 <p>
-<img src="https://raw.githubusercontent.com/Vishwa-Karthik/CryptoCurrency-App/main/assets/img1.jpg" width="200" height="400 />
+<img src="./assets/img1.jpg" width="200" height="400" >
 &nbsp;
-<img src="https://raw.githubusercontent.com/Vishwa-Karthik/CryptoCurrency-App/main/assets/img2.jpg" width="200" height="400 />
+<img src="./assets/img2.jpg" width="200" height="400" >
 &nbsp;
-<img src="https://raw.githubusercontent.com/Vishwa-Karthik/CryptoCurrency-App/main/assets/img3.jpg" width="200" height="400 />
+<img src="./assets/img3.jpg" width="200" height="400" />
+</p>
+
+<p>
+<img src="./assets/img11.jpg" width="200" height="400" >
+&nbsp;
+<img src="./assets/img22.jpg" width="200" height="400" >
+&nbsp;
+<img src="./assets/img33.jpg" width="200" height="400" />
 </p>
 
 
