@@ -78,13 +78,30 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: isDarkMode ? Colors.black38 : Colors.deepPurple,
         title: const Text("CRYPTO APP"),
         centerTitle: true,
+        actions: [
+          IconButton(
+              onPressed: () async {
+                // * Shared Preferences to save theme data locally
+                SharedPreferences prefs = await SharedPreferences.getInstance();
+
+                //* Toggle Dark Mode
+                setState(() {
+                  isDarkMode = !isDarkMode;
+                });
+                AppTheme.isDarkModeEnabled = isDarkMode;
+
+                //* Save local theme data
+                await prefs.setBool("isDarkMode", isDarkMode);
+              },
+              icon: Icon(isDarkMode ? Icons.light_mode : Icons.dark_mode)),
+        ],
       ),
       drawer: Drawer(
-        backgroundColor: Colors.deepPurple.shade200,
+        backgroundColor: Colors.deepPurple.shade100,
         child: Column(
             // ignore: prefer_const_literals_to_create_immutables
             children: [
-              // * Drawer Header
+              // * Flyout Header
               UserAccountsDrawerHeader(
                 accountName: Text(
                   name,
@@ -99,7 +116,7 @@ class _HomePageState extends State<HomePage> {
                 currentAccountPictureSize: Size.square(55),
               ),
 
-              // * Drawer Tiles
+              // * Flyout Tiles
               ListTile(
                 onTap: () {
                   Navigator.push(
@@ -226,17 +243,17 @@ class _HomePageState extends State<HomePage> {
         trailing: RichText(
           textAlign: TextAlign.end,
           text: TextSpan(
-            text: "${model.currentPrice}\n",
+            text: "${model.currentPrice.toStringAsFixed(2)}\n",
             style: GoogleFonts.aBeeZee(
               fontWeight: FontWeight.w800,
               color: Colors.black,
             ),
             children: [
               TextSpan(
-                text: "${model.priceChange24h}%\n",
+                text: "${model.priceChange24h.toStringAsFixed(2)}%\n",
                 style: GoogleFonts.aBeeZee(
                   fontWeight: FontWeight.w800,
-                  color: Colors.red,
+                  color: Colors.red.shade900,
                 ),
               ),
             ],

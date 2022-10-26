@@ -5,6 +5,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'app_theme.dart';
 
@@ -35,6 +36,7 @@ class _CoinGraphScreenState extends State<CoinGraphScreen> {
 
   //* Get values from api
   void getChartData(String days) async {
+    // * loadin the chart
     if (isFirstTime == true) {
       isFirstTime = false;
     } else {
@@ -89,6 +91,8 @@ class _CoinGraphScreenState extends State<CoinGraphScreen> {
     }
   }
 
+  // * beautifying code
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -101,6 +105,23 @@ class _CoinGraphScreenState extends State<CoinGraphScreen> {
               fontWeight: FontWeight.bold, letterSpacing: 3),
         ),
         centerTitle: true,
+        actions: [
+          IconButton(
+              onPressed: () async {
+                // * Shared Preferences to save theme data locally
+                SharedPreferences prefs = await SharedPreferences.getInstance();
+
+                //* Toggle Dark Mode
+                setState(() {
+                  isDarkMode = !isDarkMode;
+                });
+                AppTheme.isDarkModeEnabled = isDarkMode;
+
+                //* Save local theme data
+                await prefs.setBool("isDarkMode", isDarkMode);
+              },
+              icon: Icon(isDarkMode ? Icons.light_mode : Icons.dark_mode)),
+        ],
       ),
       body: isLoading == false
           ?
@@ -121,21 +142,22 @@ class _CoinGraphScreenState extends State<CoinGraphScreen> {
                             children: [
                               TextSpan(
                                 text:
-                                    "Rs.${widget.coinDetails.currentPrice}.34\n",
+                                    "Rs.${widget.coinDetails.currentPrice.toStringAsFixed(2)}\n",
                                 style: GoogleFonts.aBeeZee(
                                     color: Colors.black,
                                     fontSize: 25,
                                     fontWeight: FontWeight.w700),
                               ),
                               TextSpan(
-                                text: "${widget.coinDetails.priceChange24h}%\n",
+                                text:
+                                    "${widget.coinDetails.priceChange24h.toStringAsFixed(2)}%\n",
                                 style: GoogleFonts.aBeeZee(
-                                    color: Colors.red,
+                                    color: Colors.red.shade900,
                                     fontSize: 25,
                                     fontWeight: FontWeight.w700),
                               ),
                               TextSpan(
-                                text: "Rs.$maxY\n",
+                                text: "Rs.${maxY.toStringAsFixed(2)}\n",
                                 style: GoogleFonts.aBeeZee(
                                     color: Colors.black,
                                     fontSize: 25,
@@ -189,36 +211,106 @@ class _CoinGraphScreenState extends State<CoinGraphScreen> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
-                        ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.grey.shade600),
-                            onPressed: () {
-                              getChartData("1");
-                            },
-                            child: const Text(
-                              "1D",
-                              style: TextStyle(color: Colors.black),
-                            )),
-                        ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.grey.shade600),
-                            onPressed: () {
-                              getChartData("15");
-                            },
-                            child: const Text(
-                              "15D",
-                              style: TextStyle(color: Colors.black),
-                            )),
-                        ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.grey.shade600),
-                            onPressed: () {
-                              getChartData("30");
-                            },
-                            child: const Text(
-                              "30D",
-                              style: TextStyle(color: Colors.black),
-                            )),
+                        //* 1D Button
+                        Container(
+                          height: 50,
+                          width: 90,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(25.0),
+                            boxShadow: [
+                              BoxShadow(
+                                  color: isDarkMode
+                                      ? Colors.grey.shade600
+                                      : Colors.deepPurple,
+                                  blurRadius: 5,
+                                  spreadRadius: 5),
+                            ],
+                          ),
+                          child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(25.0),
+                                  ),
+                                  backgroundColor: isDarkMode
+                                      ? Colors.grey.shade600
+                                      : Colors.deepPurple),
+                              onPressed: () {
+                                getChartData("1");
+                              },
+                              child: const Text(
+                                "1D",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 20,
+                                ),
+                              )),
+                        ),
+
+                        //* 15D Button
+                        Container(
+                          height: 50,
+                          width: 90,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(25.0),
+                            boxShadow: [
+                              BoxShadow(
+                                  color: isDarkMode
+                                      ? Colors.grey.shade600
+                                      : Colors.deepPurple,
+                                  blurRadius: 3,
+                                  spreadRadius: 5),
+                            ],
+                          ),
+                          child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius:
+                                          BorderRadius.circular(25.0)),
+                                  backgroundColor: isDarkMode
+                                      ? Colors.grey.shade600
+                                      : Colors.deepPurple),
+                              onPressed: () {
+                                getChartData("15");
+                              },
+                              child: const Text(
+                                "15D",
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 20),
+                              )),
+                        ),
+
+                        //* 30D Button
+                        Container(
+                          height: 50,
+                          width: 90,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(25.0),
+                            boxShadow: [
+                              BoxShadow(
+                                  color: isDarkMode
+                                      ? Colors.grey.shade600
+                                      : Colors.deepPurple,
+                                  blurRadius: 5,
+                                  spreadRadius: 5),
+                            ],
+                          ),
+                          child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(25.0),
+                                  ),
+                                  backgroundColor: isDarkMode
+                                      ? Colors.grey.shade600
+                                      : Colors.deepPurple),
+                              onPressed: () {
+                                getChartData("30");
+                              },
+                              child: const Text(
+                                "30D",
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 20),
+                              )),
+                        ),
                       ],
                     ),
                   )
