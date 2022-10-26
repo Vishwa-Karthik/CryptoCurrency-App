@@ -46,7 +46,7 @@ class _CoinGraphScreenState extends State<CoinGraphScreen> {
     }
 
     String api =
-        "https://api.coingecko.com/api/v3/coins/${widget.coinDetails.id}/market_chart?vs_currency=inr&days=${days}";
+        "https://api.coingecko.com/api/v3/coins/${widget.coinDetails.id}/market_chart?vs_currency=inr&days=$days";
 
     Uri uri = Uri.parse(api);
 

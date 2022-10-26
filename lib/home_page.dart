@@ -183,12 +183,23 @@ class _HomePageState extends State<HomePage> {
                         });
                       },
                       decoration: InputDecoration(
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(19),
+                          borderSide: const BorderSide(color: Colors.black54),
+                        ),
                         prefixIcon: Icon(
                           Icons.search,
                           color: Colors.black,
                         ),
-                        label: Text("COINS", style: GoogleFonts.aBeeZee()),
+                        label: Text(
+                          "COINS",
+                          style: GoogleFonts.aBeeZee(
+                            textStyle: TextStyle(
+                                color: isDarkMode ? Colors.black : null),
+                          ),
+                        ),
                         hintText: "Search Coins",
+                        hintStyle: TextStyle(color: Colors.black),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(15),
                         ),

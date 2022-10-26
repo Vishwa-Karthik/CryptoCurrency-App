@@ -1,14 +1,20 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, must_be_immutable
 
 import 'package:crypto_app/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class ProfileUpdate extends StatelessWidget {
+class ProfileUpdate extends StatefulWidget {
   ProfileUpdate({super.key});
 
+  @override
+  State<ProfileUpdate> createState() => _ProfileUpdateState();
+}
+
+class _ProfileUpdateState extends State<ProfileUpdate> {
   // * Text Controllers
   final TextEditingController name = TextEditingController();
+
   final TextEditingController email = TextEditingController();
 
   // * Shared Preferences
@@ -21,7 +27,6 @@ class ProfileUpdate extends StatelessWidget {
   void saveDetails() async {
     await saveLocal("name", name.text);
     await saveLocal("email", email.text);
-    print("Locally saved");
   }
 
   //* Dark Mode Concept
@@ -34,6 +39,23 @@ class ProfileUpdate extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: isDarkMode ? Colors.black38 : Colors.deepPurple,
         title: const Text("Profile "),
+        actions: [
+          IconButton(
+              onPressed: () async {
+                // * Shared Preferences to save theme data locally
+                SharedPreferences prefs = await SharedPreferences.getInstance();
+
+                //* Toggle Dark Mode
+                setState(() {
+                  isDarkMode = !isDarkMode;
+                });
+                AppTheme.isDarkModeEnabled = isDarkMode;
+
+                //* Save local theme data
+                await prefs.setBool("isDarkMode", isDarkMode);
+              },
+              icon: Icon(isDarkMode ? Icons.light_mode : Icons.dark_mode)),
+        ],
       ),
       body: Column(
         // ignore: prefer_const_literals_to_create_immutables
@@ -45,11 +67,36 @@ class ProfileUpdate extends StatelessWidget {
           myTextField("Email", email),
 
           // * Button
-          ElevatedButton(
-            onPressed: () {
-              saveDetails();
-            },
-            child: const Text("Update"),
+          Container(
+            height: 50,
+            width: 110,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(25.0),
+              boxShadow: [
+                BoxShadow(
+                    color:
+                        isDarkMode ? Colors.grey.shade600 : Colors.deepPurple,
+                    blurRadius: 5,
+                    spreadRadius: 5),
+              ],
+            ),
+            child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(25.0),
+                    ),
+                    backgroundColor:
+                        isDarkMode ? Colors.grey.shade600 : Colors.deepPurple),
+                onPressed: () {
+                  saveDetails();
+                },
+                child: const Text(
+                  "UPDATE",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                  ),
+                )),
           ),
         ],
       ),
@@ -62,6 +109,10 @@ class ProfileUpdate extends StatelessWidget {
       child: TextField(
         controller: controller,
         decoration: InputDecoration(
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(19),
+            borderSide: const BorderSide(color: Colors.black54),
+          ),
           hintText: title,
           border: OutlineInputBorder(),
         ),
