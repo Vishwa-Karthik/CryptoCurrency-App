@@ -20,7 +20,7 @@ class CoinDetails {
     name = json['name'];
     image = json['image'];
     currentPrice = json['current_price'].toDouble();
-    priceChange24h = json['price_change_24h'];
+    priceChange24h = json['price_change_24h'].toDouble();
   }
 
   //* Code Below to send the data to server

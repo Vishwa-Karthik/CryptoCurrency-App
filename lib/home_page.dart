@@ -4,6 +4,7 @@ import 'dart:convert';
 
 import 'package:crypto_app/app_theme.dart';
 import 'package:crypto_app/coin_details.dart';
+import 'package:crypto_app/coin_graph.dart';
 import 'package:crypto_app/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -206,6 +207,16 @@ class _HomePageState extends State<HomePage> {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10.0),
       child: ListTile(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => CoinGraphScreen(
+                coinDetails: model,
+              ),
+            ),
+          );
+        },
         leading:
             SizedBox(height: 50, width: 50, child: Image.network(model.image)),
         title: Text(
